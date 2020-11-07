@@ -31,6 +31,8 @@ for response_key in all_response_dic:
     print(response_key, '-->', all_response_dic[response_key])
     for json_key in all_response_dic[response_key]:
         json_to_send = all_response_dic[response_key][json_key]
+        del json_to_send['id']  #delete id element, not needed in POST request
+        print("json_to_send: " + str(json_to_send))
         print("endpoint: " + "https://jsonplaceholder.typicode.com" + apis[response_key])
         resp = requests.post("https://jsonplaceholder.typicode.com" + apis[response_key],
                              json=json_to_send)
