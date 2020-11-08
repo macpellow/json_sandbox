@@ -1,43 +1,50 @@
 import requests
 
-apis = {'posts': '/posts',
+apiBaseUrl = "https://jsonplaceholder.typicode.com"
+authorisationToken = "token123"
+
+apis_dic = {'posts': '/posts',
         'posts1': '/posts1'}
+
 response_dic = {}
 all_response_dic = {}
 
-for key in apis:
-    print(key, '->', apis[key])
+for apiKey in apis_dic:
+    print(apiKey, '->', apis_dic[apiKey])
 
-    response = requests.get("https://jsonplaceholder.typicode.com" + apis[key],
-     headers={
-       "X-RapidAPI-Host": "alexnormand-dino-ipsum.p.rapidapi.com",
-       "X-RapidAPI-Key": "4xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    responseFromApiGet = requests.get(apiBaseUrl + apis_dic[apiKey],
+                                      headers={
+       "authorisation": authorisationToken
      }
-    )
+                                      )
 
-    for id in response.json():
+    for id in responseFromApiGet.json():
         print(id['id'])
-        response2 = requests.get("https://jsonplaceholder.typicode.com" + apis[key] + "/" + str(id['id']))
+        detailedResponseGet = requests.get(apiBaseUrl + apis_dic[apiKey] + "/" + str(id['id']))
 
-        print(response2.json())
-        response_dic[id['id']] = response2.json()
-    all_response_dic[key] = response_dic
+        print(detailedResponseGet.json())
+        response_dic[id['id']] = detailedResponseGet.json()
+    all_response_dic[apiKey] = response_dic
     response_dic = {}
 
 #for key1 in response_dic:
 #    print(key1, '->', response_dic[key1])
 
-for response_key in all_response_dic:
-    print(response_key, '-->', all_response_dic[response_key])
-    for json_key in all_response_dic[response_key]:
-        json_to_send = all_response_dic[response_key][json_key]
-        del json_to_send['id']  #delete id element, not needed in POST request
-        print("json_to_send: " + str(json_to_send))
-        print("endpoint: " + "https://jsonplaceholder.typicode.com" + apis[response_key])
-        resp = requests.post("https://jsonplaceholder.typicode.com" + apis[response_key],
-                             json=json_to_send)
-        print("status code: " + str(resp.status_code))
-        print("response: " + resp.text)
+for responseKey in all_response_dic:
+    print(responseKey, '-->', all_response_dic[responseKey])
+    for jsonKey in all_response_dic[responseKey]:
+        jsonToSend = all_response_dic[responseKey][jsonKey]
+        del jsonToSend['id']  #delete id element, not needed in POST request
+        print("json_to_send: " + str(jsonToSend))
+        print("endpoint: " + apiBaseUrl + apis_dic[responseKey])
+        responsePost = requests.post(apiBaseUrl + apis_dic[responseKey],
+                                     json=jsonToSend,
+                                     headers={
+                                 "authorisation": authorisationToken
+                             }
+                                     )
+        print("status code: " + str(responsePost.status_code))
+        print("response: " + responsePost.text)
         #print(json_key, '--->', json_to_send)
 
 
