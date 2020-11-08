@@ -1,7 +1,8 @@
 import requests
 
 apiBaseUrl = "https://jsonplaceholder.typicode.com"
-authorisationToken = "token123"
+sourceAuthorisationToken = "token123"
+targetAuthorisationToken = "token123"
 
 apis_dic = {'posts': '/posts',
         'posts1': '/posts1'}
@@ -14,7 +15,7 @@ for apiKey in apis_dic:
 
     responseFromApiGet = requests.get(apiBaseUrl + apis_dic[apiKey],
                                       headers={
-       "authorisation": authorisationToken
+       "authorisation": sourceAuthorisationToken
      }
                                       )
 
@@ -40,7 +41,7 @@ for responseKey in all_response_dic:
         responsePost = requests.post(apiBaseUrl + apis_dic[responseKey],
                                      json=jsonToSend,
                                      headers={
-                                 "authorisation": authorisationToken
+                                 "authorisation": targetAuthorisationToken
                              }
                                      )
         print("status code: " + str(responsePost.status_code))
